@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "纪念币信息填写助手 - DYexb原创开发",
-  "version": "1.0",
-  "description": "快速填写纪念币预约表单的 Chrome 扩展 - 严禁商业用途和付费交易 - 版权归DYexb所有",
+  "name": "中国农业银行纪念币预约填写助手",
+  "version": "1.1.0",
+  "description": "仅用于中国农业银行纪念币预约页面的本地信息填写扩展",
   "icons": {
     "16": "logo.png",
     "32": "logo.png",
@@ -10,40 +10,14 @@
     "128": "logo.png"
   },
   "permissions": ["storage", "activeTab"],
-  "host_permissions": [
-    "https://apply.95559.com.cn/*",
-    "https://cmcoins.boc.cn/*",
-    "https://eapply.abchina.com/*",
-    "https://static.jnb.icbc.com.cn/*",
-    "https://jnb.icbc.com.cn/*",
-    "https://ccb.com/*",
-    "https://jinianbi.ccb.com/*",
-    "https://mcm.hxb.com.cn/*",
-    "https://pbank.psbc.com/*",
-    "https://upbp.startbank.com.cn/*",
-    "https://wap0.spdb.com.cn/*",
-    "https://wxyh.hsbank.cc/*"
-  ],
+  "host_permissions": ["https://eapply.abchina.com/*"],
   "action": {
     "default_popup": "1.html",
-    "default_title": "纪念币信息填写助手 - DYexb开发 - 禁止商业使用"
+    "default_title": "中国农业银行纪念币预约填写助手"
   },
   "content_scripts": [
     {
-      "matches": [
-        "https://apply.95559.com.cn/*",
-        "https://cmcoins.boc.cn/*",
-        "https://eapply.abchina.com/*",
-        "https://static.jnb.icbc.com.cn/*",
-        "https://jnb.icbc.com.cn/*",
-        "https://ccb.com/*",
-        "https://jinianbi.ccb.com/*",
-        "https://mcm.hxb.com.cn/*",
-        "https://pbank.psbc.com/*",
-        "https://upbp.startbank.com.cn/*",
-        "https://wap0.spdb.com.cn/*",
-        "https://wxyh.hsbank.cc/*"
-      ],
+      "matches": ["https://eapply.abchina.com/*"],
       "js": ["2.js"],
       "run_at": "document_idle"
     }
@@ -51,24 +25,11 @@
   "web_accessible_resources": [
     {
       "resources": ["3.html", "3.css", "3.js", "sxnx.png", "logo.png"],
-      "matches": [
-        "https://apply.95559.com.cn/*",
-        "https://cmcoins.boc.cn/*",
-        "https://eapply.abchina.com/*",
-        "https://static.jnb.icbc.com.cn/*",
-        "https://jnb.icbc.com.cn/*",
-        "https://ccb.com/*",
-        "https://jinianbi.ccb.com/*",
-        "https://mcm.hxb.com.cn/*",
-        "https://pbank.psbc.com/*",
-        "https://upbp.startbank.com.cn/*",
-        "https://wap0.spdb.com.cn/*",
-        "https://wxyh.hsbank.cc/*"
-      ]
+      "matches": ["https://eapply.abchina.com/*"]
     }
   ],
   "content_security_policy": {
     "extension_policy": "script-src 'self'; object-src 'self';"
   },
-  "author": "DYexb - 严禁商业用途和付费交易 - 版权所有"
+  "author": "CNCAGN（基于 DYexb 原项目修改）"
 }

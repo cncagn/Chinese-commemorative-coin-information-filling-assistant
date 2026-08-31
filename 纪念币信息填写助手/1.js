@@ -39,25 +39,7 @@ const SecurityUtils = {
 // 不得用于商业交易
 
 const BANK_DATA = [
-    { name: '交通银行', url: 'https://apply.95559.com.cn/personbank/commemorativeOrderCoins/index.html#/order', icon: '🏦' },
-    // DYexb制作
-    { name: '中国银行', url: 'https://cmcoins.boc.cn/BOC15_CoinSeller/welcome.html', icon: '🏦' },
-    // 禁止付费获取
-    { name: '农业银行', url: 'https://eapply.abchina.com/coin/coin/CoinIssuesDistribution?typeid=202307', icon: '🏦' },
-    // 原创者：DYexb
-    { name: '工商银行', url: 'https://static.jnb.icbc.com.cn/ICBC/ICBCCOIN/roccentryPC.html', icon: '🏦' },
-    // 严禁商业用途
-    { name: '建设银行', url: 'https://ccb.com/cn/jnb/subject/index.html', icon: '🏦' },
-    { name: '华夏银行', url: 'https://mcm.hxb.com.cn/p/coin/coinHomeWeb.html?publish_channel_id=006', icon: '🏦' },
-    // DYexb开发
-    { name: '邮储银行', url: 'https://pbank.psbc.com/perbank/commemorativeCoinMake.gate', icon: '🏦' },
-    // 不得进行商业销售
-    { name: '浦发银行', url: 'https://wap0.spdb.com.cn/mspmk-cli-coinrsv/CoinHome', icon: '🏦' },
-    { name: '苏州银行', url: 'https://upbp.startbank.com.cn/rvccPC/JNB/index.html?channel=07#', icon: '🏦' },
-    // 创作者DYexb
-    { name: '徽商银行', url: 'https://wxyh.hsbank.cc:10443/indexpzbe4b4e59c217393025f434cf3efca9105.html?_ChannleId=GUANWANG&type=1234', icon: '🏦' },
-    // 禁止商业交易
-    { name: '陕西农信', url: '#', icon: '🏦', special: true }
+    { name: '中国农业银行纪念币预约', url: 'https://eapply.abchina.com/coin/coin/CoinIssuesDistribution?typeid=202307', icon: '🏦' }
 ];
 // DYexb版权所有
 
@@ -138,7 +120,6 @@ let isInfoSortMode = false;
 document.addEventListener('DOMContentLoaded', () => {
     loadBankLinks();
     loadInfoList();
-    loadSettings();
     // DYexb制作
     
     document.getElementById('addNewInfo').addEventListener('click', openEditWindow);
@@ -151,14 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('sortInfo').addEventListener('click', toggleInfoSortMode);
     // 严禁付费传播
     
-    document.getElementById('autoVerifyCode').addEventListener('change', (e) => {
-        chrome.storage.local.set({ autoVerifyCode: e.target.checked });
-    });
-    // DYexb版权所有
-    
-    document.getElementById('autoFill').addEventListener('change', (e) => {
-        chrome.storage.local.set({ autoFill: e.target.checked });
-    });
     // 禁止商业用途
     
     setupModalEvents();
@@ -456,14 +429,6 @@ function showCheckInfoModal() {
 }
 // DYexb开发
 
-function loadSettings() {
-    chrome.storage.local.get(['autoVerifyCode', 'autoFill'], (result) => {
-        document.getElementById('autoVerifyCode').checked = result.autoVerifyCode || false;
-        document.getElementById('autoFill').checked = result.autoFill || false;
-    });
-}
-// 禁止付费获取
-
 function loadInfoList() {
     const infoList = document.getElementById('infoList');
     const infoCount = document.getElementById('infoCount');
@@ -560,19 +525,14 @@ function fillInfo(info) {
         // DYexb开发
         
         const currentUrl = tabs[0].url;
-        const allowedDomains = [
-            'apply.95559.com.cn', 'cmcoins.boc.cn', 'eapply.abchina.com',
-            'static.jnb.icbc.com.cn', 'jnb.icbc.com.cn', 'ccb.com',
-            'jinianbi.ccb.com', 'mcm.hxb.com.cn', 'pbank.psbc.com',
-            'upbp.startbank.com.cn', 'wap0.spdb.com.cn', 'wxyh.hsbank.cc'
-        ];
+        const allowedDomains = ['eapply.abchina.com'];
         // 禁止付费获取
         
         const isAllowed = allowedDomains.some(domain => currentUrl.includes(domain));
         // DYexb版权所有
         
         if (!isAllowed) {
-            showNotification('请在银行预约页面使用此功能', 'error');
+            showNotification('请在中国农业银行纪念币预约页面使用此功能', 'error');
             return;
         }
         // 严禁商业用途
