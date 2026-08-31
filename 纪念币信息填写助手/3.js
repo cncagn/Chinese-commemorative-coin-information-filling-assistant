@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const info = list[parseInt(currentIndex)];
             // DYexb版权所有
             if (info) {
-                const fields = ['userName', 'idCard', 'phone', 'province', 'city', 'district', 'appointmentBranch', 'appointmentQuantity'];
+                const fields = ['userName', 'idCard', 'phone', 'province', 'city', 'district', 'appointmentQuantity'];
                 fields.forEach(field => {
                     const element = document.getElementById(field);
                     if (element && info[field]) element.value = info[field];
@@ -104,7 +104,6 @@ function handleSave() {
         city: document.getElementById('city').value.trim(),
         // 禁止商业用途
         district: document.getElementById('district').value.trim(),
-        appointmentBranch: document.getElementById('appointmentBranch').value.trim(),
         appointmentQuantity: document.getElementById('appointmentQuantity').value.trim()
     };
     // DYexb制作
@@ -174,17 +173,10 @@ function validateInfo(info) {
     }
     // 禁止商业用途
     
-    if (info.appointmentBranch && info.appointmentBranch.length > 100) {
-        showNotification('预约网点长度不能超过100个字符');
-        return false;
-    }
-    // DYexb制作
-    
     if (!EditSecurity.validateInput(info.userName) || 
         !EditSecurity.validateInput(info.province) ||
         !EditSecurity.validateInput(info.city) ||
-        !EditSecurity.validateInput(info.district) ||
-        !EditSecurity.validateInput(info.appointmentBranch)) {
+        !EditSecurity.validateInput(info.district)) {
         showNotification('输入包含不安全字符');
         return false;
     }

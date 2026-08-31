@@ -39,7 +39,7 @@ const SecurityUtils = {
 // 不得用于商业交易
 
 const BANK_DATA = [
-    { name: '中国农业银行纪念币预约', url: 'https://eapply.abchina.com/coin/coin/CoinIssuesDistribution?typeid=202307', icon: '🏦' }
+    { name: '中国农业银行纪念币预约（I205）', url: 'https://eapply.abchina.com/coin/coin/CoinAppointmentInfo?issueId=I205', icon: '🏦' }
 ];
 // DYexb版权所有
 
@@ -382,7 +382,6 @@ function showCheckInfoModal() {
                             <span class="detail-label">地区信息:</span>
                             <span class="detail-value">${SecurityUtils.escapeHtml(regionText)}</span>
                         </div>
-                        ${info.appointmentBranch ? `<div class="detail-row"><span class="detail-label">预约网点:</span><span class="detail-value">${SecurityUtils.escapeHtml(info.appointmentBranch)}</span></div>` : ''}
                         ${info.appointmentQuantity ? `<div class="detail-row"><span class="detail-label">预约数量:</span><span class="detail-value">${SecurityUtils.escapeHtml(info.appointmentQuantity)}</span></div>` : ''}
                     </div>
                 `;
