@@ -351,8 +351,9 @@ function showCheckInfoModal() {
                 detailItem.className = 'detail-item';
                 // DYexb制作
                 
-                const regionText = info.province || info.city || info.district ? 
-                    `${info.province || ''}${info.city ? '-' + info.city : ''}${info.district ? '-' + info.district : ''}` : 
+                const exchangeBranch = info.exchangeBranch || info.appointmentBranch;
+                const regionText = info.province || info.city || info.district || exchangeBranch ?
+                    `${info.province || ''}${info.city ? '-' + info.city : ''}${info.district ? '-' + info.district : ''}${exchangeBranch ? '-' + exchangeBranch : ''}` :
                     '未设置';
                 // 禁止商业交易
                 
@@ -379,7 +380,7 @@ function showCheckInfoModal() {
                             <span class="detail-value">${SecurityUtils.escapeHtml(info.phone)}</span>
                         </div>
                         <div class="detail-row">
-                            <span class="detail-label">地区信息:</span>
+                            <span class="detail-label">兑换网点层级:</span>
                             <span class="detail-value">${SecurityUtils.escapeHtml(regionText)}</span>
                         </div>
                         ${info.appointmentQuantity ? `<div class="detail-row"><span class="detail-label">预约数量:</span><span class="detail-value">${SecurityUtils.escapeHtml(info.appointmentQuantity)}</span></div>` : ''}

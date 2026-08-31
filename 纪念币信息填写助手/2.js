@@ -25,8 +25,9 @@ function safeQuerySelector(selectors) {
     const selectorList = Array.isArray(selectors) ? selectors : [selectors];
     for (const selector of selectorList) {
         try {
-            const element = document.querySelector(selector);
-            if (element) return element;
+            const elements = Array.from(document.querySelectorAll(selector));
+            const visibleElement = elements.find((element) => element.offsetParent !== null);
+            if (visibleElement || elements[0]) return visibleElement || elements[0];
         } catch (error) {
             console.warn('选择器执行失败:', selector, error);
         }
@@ -47,30 +48,19 @@ function fillInput(selectors, value) {
     return true;
 }
 
-function selectOption(select, value) {
-    if (!select || !value) return false;
-
-    const normalizedValue = value.trim();
-    const option = Array.from(select.options).find((candidate) => {
-        const text = candidate.text.trim();
-        return text === normalizedValue || candidate.value === normalizedValue ||
-            text.includes(normalizedValue) || normalizedValue.includes(text);
-    });
-
-    if (!option) return false;
-    select.value = option.value;
-    ['input', 'change', 'blur'].forEach((eventType) => triggerEvent(select, eventType));
-    return true;
+function getVisibleExchangeInputs() {
+    return Array.from(document.querySelectorAll('input[placeholder*="请选择兑换网点"]'))
+        .filter((input) => input.offsetParent !== null);
 }
 
-function waitForSelect(selector, timeout = 6000) {
+function waitForExchangeInput(index, timeout = 6000) {
     return new Promise((resolve) => {
         const startedAt = Date.now();
         const timer = setInterval(() => {
-            const element = safeQuerySelector(selector);
-            if (element && element.tagName === 'SELECT') {
+            const input = getVisibleExchangeInputs()[index];
+            if (input) {
                 clearInterval(timer);
-                resolve(element);
+                resolve(input);
             } else if (Date.now() - startedAt >= timeout) {
                 clearInterval(timer);
                 resolve(null);
@@ -79,23 +69,61 @@ function waitForSelect(selector, timeout = 6000) {
     });
 }
 
+function waitForVisibleDropdown(timeout = 6000) {
+    return new Promise((resolve) => {
+        const startedAt = Date.now();
+        const timer = setInterval(() => {
+            const dropdown = Array.from(document.querySelectorAll('.el-select-dropdown'))
+                .find((element) => element.offsetParent !== null);
+            if (dropdown) {
+                clearInterval(timer);
+                resolve(dropdown);
+            } else if (Date.now() - startedAt >= timeout) {
+                clearInterval(timer);
+                resolve(null);
+            }
+        }, 100);
+    });
+}
+
+async function selectElementUiOption(input, value) {
+    if (!input || !value) return false;
+    input.click();
+
+    const dropdown = await waitForVisibleDropdown();
+    if (!dropdown) return false;
+
+    const normalizedValue = value.trim();
+    const option = Array.from(dropdown.querySelectorAll('.el-select-dropdown__item:not(.is-disabled)'))
+        .find((candidate) => {
+            const text = candidate.textContent.trim();
+            return text === normalizedValue || text.includes(normalizedValue) || normalizedValue.includes(text);
+        });
+    if (!option) return false;
+
+    option.click();
+    await new Promise((resolve) => setTimeout(resolve, 250));
+    return true;
+}
+
 async function fillAgriculturalBankRegion(data) {
     const levels = [
-        { selector: '#orglevel1', value: data.province, label: '省级分行' },
-        { selector: '#orglevel2', value: data.city, label: '市级分行' },
-        { selector: '#orglevel3', value: data.district, label: '支行/区级机构' }
+        { value: data.province, label: '省级分行' },
+        { value: data.city, label: '市级分行' },
+        { value: data.district, label: '支行/区级机构' },
+        { value: data.exchangeBranch || data.appointmentBranch, label: '兑换网点' }
     ];
 
     let filledCount = 0;
-    for (const level of levels) {
+    for (const [index, level] of levels.entries()) {
         if (!level.value) break;
 
-        const select = await waitForSelect(level.selector);
-        if (!select) {
-            console.warn(`未等到农行${level.label}下拉框: ${level.selector}`);
+        const input = await waitForExchangeInput(index, 6000);
+        if (!input) {
+            console.warn(`未等到农行${level.label}下拉框`);
             break;
         }
-        if (!selectOption(select, level.value)) {
+        if (!await selectElementUiOption(input, level.value)) {
             console.warn(`农行${level.label}没有匹配项: ${level.value}`);
             break;
         }
@@ -119,9 +147,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     (async () => {
         const data = request.data;
         let filledFields = 0;
-        if (fillInput(['#name', 'input[name="name"]'], data.userName)) filledFields++;
-        if (fillInput(['#identNo', 'input[name="identNo"]'], data.idCard)) filledFields++;
-        if (fillInput(['#mobile', 'input[name="mobile"]'], data.phone)) filledFields++;
+        if (fillInput(['#name', 'input[name="name"]', '.cell .information-input:nth-of-type(1) .el-input__inner'], data.userName)) filledFields++;
+        if (fillInput(['#identNo', 'input[name="identNo"]', '.cell .information-input:nth-of-type(3) .el-input__inner'], data.idCard)) filledFields++;
+        if (fillInput(['#mobile', 'input[name="mobile"]', '.cell .information-input:nth-of-type(4) .el-input__inner'], data.phone)) filledFields++;
 
         const regionFilled = await fillAgriculturalBankRegion(data);
         filledFields += regionFilled;

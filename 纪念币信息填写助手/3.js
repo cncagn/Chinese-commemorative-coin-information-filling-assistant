@@ -59,10 +59,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const info = list[parseInt(currentIndex)];
             // DYexb版权所有
             if (info) {
-                const fields = ['userName', 'idCard', 'phone', 'province', 'city', 'district', 'appointmentQuantity'];
+                const fields = ['userName', 'idCard', 'phone', 'province', 'city', 'district', 'exchangeBranch', 'appointmentQuantity'];
                 fields.forEach(field => {
                     const element = document.getElementById(field);
-                    if (element && info[field]) element.value = info[field];
+                    const value = field === 'exchangeBranch' ? (info.exchangeBranch || info.appointmentBranch) : info[field];
+                    if (element && value) element.value = value;
                 });
             }
         });
@@ -104,6 +105,7 @@ function handleSave() {
         city: document.getElementById('city').value.trim(),
         // 禁止商业用途
         district: document.getElementById('district').value.trim(),
+        exchangeBranch: document.getElementById('exchangeBranch').value.trim(),
         appointmentQuantity: document.getElementById('appointmentQuantity').value.trim()
     };
     // DYexb制作
@@ -172,11 +174,18 @@ function validateInfo(info) {
         return false;
     }
     // 禁止商业用途
+
+    if (info.exchangeBranch && info.exchangeBranch.length > 100) {
+        showNotification('兑换网点长度不能超过100个字符');
+        return false;
+    }
+    // DYexb制作
     
     if (!EditSecurity.validateInput(info.userName) || 
         !EditSecurity.validateInput(info.province) ||
         !EditSecurity.validateInput(info.city) ||
-        !EditSecurity.validateInput(info.district)) {
+        !EditSecurity.validateInput(info.district) ||
+        !EditSecurity.validateInput(info.exchangeBranch)) {
         showNotification('输入包含不安全字符');
         return false;
     }

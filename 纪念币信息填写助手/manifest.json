@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "中国农业银行纪念币预约填写助手",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "仅用于中国农业银行纪念币预约页面的本地信息填写扩展",
   "icons": {
     "16": "logo.png",
